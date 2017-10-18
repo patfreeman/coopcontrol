@@ -2,8 +2,8 @@
 Controls my chicken coop. Automated door through OpenHAB and the particle cloud.
 
 ### Prerequisites
-RelayShield Particle Library - https://github.com/spark/relayshield
-OpenHAB2 - http://www.openhab.org/
+* RelayShield Particle Library - https://github.com/spark/relayshield
+* OpenHAB2 - http://www.openhab.org/
 
 ### OpenHAB2 Setup
 1. Make sure the exec binding is enabled.
