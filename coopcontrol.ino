@@ -1,4 +1,3 @@
-// This #include statement was automatically added by the Particle IDE.
 #include "DHT.h"
 
 // This #include statement was automatically added by the Particle IDE.
