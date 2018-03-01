@@ -4,7 +4,7 @@
 #include <RelayShield.h>
 
 // Make our own state enumerator
-enum State { open, closed };
+enum State { open, closed, open_wait, close_wait };
 
 // Create an instance of the RelayShield library, so we have something to talk to
 RelayShield myRelays;
@@ -23,12 +23,17 @@ int light_sensor_pin = A0;
 String DHTNAME_ONE = "inside";
 String DHTNAME_TWO = "outside";
 
+// Delay after light sensor before toggling door in milliseconds
+#define CLOSE_DELAY 900000 // 15 minutes
+//#define OPEN_DELAY 5400000 // 90 minutes
+
 // Variables
 double one_temperature = 0;
 int one_humidity = 0;
 double two_temperature = 0;
 int two_humidity = 0;
 int light = 0;
+unsigned long toggle_at;
 
 // DHT sensor
 DHT dht_one(DHTPIN_ONE, DHTTYPE_ONE);
@@ -127,4 +132,31 @@ void loop() {
     Spark.publish(String(DHTNAME_TWO) + " temperature", String(two_temperature) + " °C", PRIVATE);
     Spark.publish(String(DHTNAME_TWO) + " humidity", String(two_humidity) + "%", PRIVATE);
     delay(PUBLISH_DELAY);
+
+#ifdef CLOSE_DELAY
+    if (currentState == open && light == 0) {
+        currentState = close_wait;
+        toggle_at = millis() + CLOSE_DELAY;
+        Particle.publish("status", "close_wait");
+    } else if (currentState == close_wait && light != 0) {
+        currentState = open;
+    } else if (currentState == close_wait && light == 0) {
+        if(millis() >= toggle_at) {
+            closeDoor("");
+        }
+    }
+#endif
+#ifdef OPEN_DELAY
+    if (currentState == closed && light != 0) {
+        currentState = open_wait;
+        toggle_at = millis() + OPEN_DELAY;
+        Particle.publish("status", "open_wait");
+    } else if (currentState == open_wait && light == 0) {
+        currentState = closed;
+    } else if (currentState == open_wait && light != 0) {
+        if(millis() >= toggle_at) {
+            openDoor("");
+        }
+    }
+#endif
 }
