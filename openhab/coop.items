@@ -1,0 +1,3 @@
+Switch Coop_Door_Switch		"Chicken Coop Door"			(Outdoor)	["Switchable"]
+String Coop_Door		"Chicken Coop Door [%s]"		(Outdoor)	{channel="exec:command:coop_door:input"}
+String Coop_Door_State		"Chicken Coop Door [%s]"		(Outdoor)	{channel="exec:command:coop_door_state:output"}

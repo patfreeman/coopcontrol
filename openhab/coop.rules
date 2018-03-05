@@ -1,0 +1,27 @@
+rule "Coop Door Opened"
+when
+	Item Coop_Door_Switch received command ON
+then
+	Coop_Door.sendCommand("OPEN")
+end
+rule "Coop Door Closed"
+when
+	Item Coop_Door_Switch received command OFF
+then
+	Coop_Door.sendCommand("CLOSED")
+end
+
+rule "Coop Door Closed Remotely"
+when
+	Item Coop_Door_State changed from OPEN to CLOSED
+then
+	Coop_Door.sendCommand("CLOSED")
+	Coop_Door_Switch.postUpdate("OFF")
+end
+rule "Coop Door Opened Remotely"
+when
+	Item Coop_Door_State changed from CLOSED to OPEN
+then
+	Coop_Door.sendCommand("OPEN")
+	Coop_Door_Switch.postUpdate("ON")
+end

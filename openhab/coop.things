@@ -1,0 +1,2 @@
+Thing exec:command:coop_door "coop_door" @ "Chicken Run" [command="/openhab/conf/scripts/coop_door.sh %2$s", interval=0, timeout=10, autorun=true]
+Thing exec:command:coop_door_state "coop_door_state" @ "Chicken Run" [command="/openhab/conf/scripts/coop_door.sh", interval=60, timeout=10, autorun=true]
