@@ -1,2 +1,7 @@
 Thing exec:command:coop_door "coop_door" @ "Chicken Run" [command="/openhab/conf/scripts/coop_door.sh %2$s", interval=0, timeout=10, autorun=true]
 Thing exec:command:coop_door_state "coop_door_state" @ "Chicken Run" [command="/openhab/conf/scripts/coop_door.sh", interval=60, timeout=10, autorun=true]
+Thing exec:command:coop_temp "coop_temp" @ "Chicken Run" [command="/openhab/conf/scripts/coop_temp.sh", interval=60, timeout=5, autorun=true]
+Thing exec:command:coop_humidity "coop_humidity" @ "Chicken Run" [command="/openhab/conf/scripts/coop_humidity.sh", interval=60, timeout=5, autorun=true]
+Thing exec:command:coop_outside_temp "run_temp" @ "Chicken Run" [command="/openhab/conf/scripts/coop_outside_temp.sh", interval=60, timeout=5, autorun=true]
+Thing exec:command:coop_outside_humidity "run_humidity" @ "Chicken Run" [command="/openhab/conf/scripts/coop_outside_humidity.sh", interval=60, timeout=5, autorun=true]
+Thing exec:command:coop_outside_light "run_light" @ "Chicken Run" [command="/openhab/conf/scripts/coop_outside_light.sh", interval=60, timeout=5, autorun=true]

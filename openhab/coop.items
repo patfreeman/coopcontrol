@@ -1,3 +1,8 @@
 Switch Coop_Door_Switch		"Chicken Coop Door"			(Outdoor)	["Switchable"]
 String Coop_Door		"Chicken Coop Door [%s]"		(Outdoor)	{channel="exec:command:coop_door:input"}
 String Coop_Door_State		"Chicken Coop Door [%s]"		(Outdoor)	{channel="exec:command:coop_door_state:output"}
+String Coop_Inside_Temp		"Chicken Coop Temperature [%s °C]"	(Outdoor)	{channel="exec:command:coop_temp:output"}
+Number Coop_Inside_Humidity	"Chicken Coop Humidity [%d%%]"		(Outdoor)	{channel="exec:command:coop_humidity:exit"}
+String Coop_Outside_Temp	"Chicken Run Temperature [%s °C]"	(Outdoor)	{channel="exec:command:coop_outside_temp:output"}
+Number Coop_Outside_Humidity	"Chicken Run Humidity [%d%%]"		(Outdoor)	{channel="exec:command:coop_outside_humidity:exit"}
+Number Coop_Outside_Light	"Chicken Run Light Meter [%d%%]"	(Outdoor)	{channel="exec:command:coop_outside_light:exit"}
