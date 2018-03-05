@@ -6,17 +6,18 @@
 // Make our own state enumerator
 enum State { open, closed, open_wait, close_wait, unknown };
 
-// Create an instance of the RelayShield library, so we have something to talk to
+// Create an instance of the RelayShield library to talk to
 RelayShield myRelays;
 
 State currentState = unknown;
 
-// Pins
+/********************************* <CONFIGS> *********************************/
+// Hardware Pins
 int light_sensor_pin = A0;
 #define DHTPIN_ONE 1
 #define DHTPIN_TWO 2
 
-// DHT parameters
+// DHT Types and Names
 #define DHTTYPE_ONE DHT22
 #define DHTTYPE_TWO DHT22
 String DHTNAME_ONE = "inside";
@@ -25,6 +26,18 @@ String DHTNAME_TWO = "outside";
 // Delay after light sensor before toggling door in milliseconds
 #define CLOSE_DELAY 1800000 // 30 minutes
 //#define OPEN_DELAY 5400000 // 90 minutes
+
+// Milliseconds of delay between relay controls
+// I saw problems with the relay delay being too short and the particle
+// rebooting. (Short circuit?)
+#define RELAY_DELAY 100
+#define PUBLISH_DELAY 10000
+
+//STARTUP(WiFi.selectAntenna(ANT_INTERNAL)); // selects the CHIP antenna
+STARTUP(WiFi.selectAntenna(ANT_EXTERNAL)); // selects the u.FL antenna
+//STARTUP(WiFi.selectAntenna(ANT_AUTO)); // continually switch between antennas
+
+/********************************* </CONFIGS> *********************************/
 
 // Variables
 double one_temperature = 0;
@@ -37,15 +50,6 @@ unsigned long toggle_at;
 // DHT sensor
 DHT dht_one(DHTPIN_ONE, DHTTYPE_ONE);
 DHT dht_two(DHTPIN_TWO, DHTTYPE_TWO);
-
-// Millisecond of delay between relay controls
-// I saw problems with the delay being too short and the particle rebooting. (Short circuit?)
-#define RELAY_DELAY 100
-#define PUBLISH_DELAY 10000
-
-//STARTUP(WiFi.selectAntenna(ANT_INTERNAL)); // selects the CHIP antenna
-STARTUP(WiFi.selectAntenna(ANT_EXTERNAL)); // selects the u.FL antenna
-//STARTUP(WiFi.selectAntenna(ANT_AUTO)); // continually switches at high speed between antennas
 
 void setup() {
     myRelays.begin();
@@ -133,11 +137,15 @@ void loop() {
     two_humidity = dht_two.getHumidity();
 
     Spark.publish("light", String(light) + "%", PRIVATE);
-    Spark.publish(String(DHTNAME_ONE) + " temperature", String(one_temperature) + " °C", PRIVATE);
-    Spark.publish(String(DHTNAME_ONE) + " humidity", String(one_humidity) + "%", PRIVATE);
+    Spark.publish(String(DHTNAME_ONE) + " temperature", String(one_temperature)
+        + " °C", PRIVATE);
+    Spark.publish(String(DHTNAME_ONE) + " humidity", String(one_humidity)
+        + "%", PRIVATE);
     delay(PUBLISH_DELAY);
-    Spark.publish(String(DHTNAME_TWO) + " temperature", String(two_temperature) + " °C", PRIVATE);
-    Spark.publish(String(DHTNAME_TWO) + " humidity", String(two_humidity) + "%", PRIVATE);
+    Spark.publish(String(DHTNAME_TWO) + " temperature", String(two_temperature)
+        + " °C", PRIVATE);
+    Spark.publish(String(DHTNAME_TWO) + " humidity", String(two_humidity)
+        + "%", PRIVATE);
     delay(PUBLISH_DELAY);
 
 #ifdef CLOSE_DELAY
