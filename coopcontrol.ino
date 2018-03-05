@@ -70,14 +70,12 @@ void setup() {
     // Set door state
     float light_measurement = analogRead(light_sensor_pin);
     light = (int)(light_measurement/4096*100);
-    if (currentState == unknown) {
-        if(light) {
-            openDoor("");
-        } else {
-            currentState = close_wait;
-            toggle_at = millis() + CLOSE_DELAY;
-            Particle.publish("status", "close_wait");
-        }
+    if(light) {
+        openDoor("");
+    } else {
+        currentState = close_wait;
+        toggle_at = millis() + CLOSE_DELAY;
+        Particle.publish("status", "close_wait");
     }
     Particle.publish("setupComplete");
 }
