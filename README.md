@@ -2,8 +2,8 @@
 Controls my chicken coop. Automated door through OpenHAB and the particle cloud.
 
 ### Features
- * Automatically open and closing with the sun.
- * Temperature and Humidity sensors for ingestion into openhab.
+ * Automatically open and close with the sun.
+ * Temperature and humidity sensors for ingestion into openhab.
 
 ### Prerequisites
 * RelayShield Particle Library - https://github.com/spark/relayshield
@@ -23,10 +23,10 @@ Controls my chicken coop. Automated door through OpenHAB and the particle cloud.
 ### OpenHAB2 Setup
 1. Make sure the exec binding is enabled.
 2. Edit the files from the [openhab](openhab) subdirectory.
- * [coop_door.sh](openhab/coop_door.sh) needs the appropriate PARTICLE\_ variables set
+ * coop\_\*.sh need the appropriate PARTICLE\_ variables set
  * [coop.things](openhab/coop.things) needs the appriopriate location of the coop_door.sh script
 3. Add the files from the [openhab](openhab) subdirectory to the appropriate configuration directories.
- * [coop_door.sh](openhab/coop_door.sh) into your openhab conf/scripts directory
+ * coop\_\*.sh into your openhab conf/scripts directory
  * [coop.things](openhab/coop.things) into your openhab conf/things directory
  * [coop.items](openhab/coop.items) into your openhab conf/items directory
  * [coop.rules](openhab/coop.rules) into your openhab conf/rules directory
