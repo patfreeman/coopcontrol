@@ -4,13 +4,12 @@
 #include <RelayShield.h>
 
 // Make our own state enumerator
-enum State { open, closed, open_wait, close_wait };
+enum State { open, closed, open_wait, close_wait, unknown };
 
 // Create an instance of the RelayShield library, so we have something to talk to
 RelayShield myRelays;
 
-// Just assume it starts off closed. Probably should be unknown or something else
-State currentState = closed;
+State currentState = unknown;
 
 // Pins
 int light_sensor_pin = A0;
@@ -24,7 +23,7 @@ String DHTNAME_ONE = "inside";
 String DHTNAME_TWO = "outside";
 
 // Delay after light sensor before toggling door in milliseconds
-#define CLOSE_DELAY 900000 // 15 minutes
+#define CLOSE_DELAY 1800000 // 30 minutes
 //#define OPEN_DELAY 5400000 // 90 minutes
 
 // Variables
@@ -59,7 +58,6 @@ void setup() {
     Particle.function("CLOSED", closeDoor);
     Particle.function("toggle", toggle);
     Particle.function("state", state);
-    Particle.publish("setupComplete");
     // Variables
     Particle.variable("light", light);
     Particle.variable(String(DHTNAME_ONE) + "_temp", one_temperature);
@@ -69,9 +67,23 @@ void setup() {
     // Start DHT sensor
     dht_one.begin();
     dht_two.begin();
+    // Set door state
+    float light_measurement = analogRead(light_sensor_pin);
+    light = (int)(light_measurement/4096*100);
+    if (currentState == unknown) {
+        if(light) {
+            openDoor("");
+        } else {
+            currentState = close_wait;
+            toggle_at = millis() + CLOSE_DELAY;
+            Particle.publish("status", "close_wait");
+        }
+    }
+    Particle.publish("setupComplete");
 }
 
 int openDoor(String args) {
+    Particle.publish("request", "open");
     // Main control relay
     delay(RELAY_DELAY); myRelays.off(4);
     // Reverse polarity
@@ -85,6 +97,7 @@ int openDoor(String args) {
 }
 
 int closeDoor(String args) {
+    Particle.publish("request", "close");
     // Main control relay
     delay(RELAY_DELAY); myRelays.off(4);
     // Reverse polarity
@@ -109,11 +122,7 @@ int toggle(String args) {
 
 int state(String args) {
     Particle.publish("request", "state");
-    if (currentState == open) {
-        return(0);
-    } else {
-        return(1);
-    }
+    return(currentState);
 }
 
 void loop() {
