@@ -13,14 +13,16 @@ end
 
 rule "Coop Door Closed Remotely"
 when
-	Item Coop_Door_State changed from OPEN to CLOSED
+	Item Coop_Door_State changed from OPEN to CLOSED or
+	Item Coop_Door_State changed from CLOSE_WAIT to CLOSED
 then
 	Coop_Door.sendCommand("CLOSED")
 	Coop_Door_Switch.postUpdate("OFF")
 end
 rule "Coop Door Opened Remotely"
 when
-	Item Coop_Door_State changed from CLOSED to OPEN
+	Item Coop_Door_State changed from CLOSED to OPEN or
+	Item Coop_Door_State changed from OPEN_WAIT to OPEN
 then
 	Coop_Door.sendCommand("OPEN")
 	Coop_Door_Switch.postUpdate("ON")
