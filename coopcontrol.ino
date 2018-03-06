@@ -124,6 +124,7 @@ int toggle(String args) {
 
 int state(String args) {
     Particle.publish("request", "state");
+    Particle.publish("status", String(currentState));
     return(currentState);
 }
 
@@ -141,12 +142,13 @@ void loop() {
         + " °C", PRIVATE);
     Spark.publish(String(DHTNAME_ONE) + " humidity", String(one_humidity)
         + "%", PRIVATE);
+
     delay(PUBLISH_DELAY);
+
     Spark.publish(String(DHTNAME_TWO) + " temperature", String(two_temperature)
         + " °C", PRIVATE);
     Spark.publish(String(DHTNAME_TWO) + " humidity", String(two_humidity)
         + "%", PRIVATE);
-    delay(PUBLISH_DELAY);
 
 #ifdef CLOSE_DELAY
     if (currentState == open && light == 0) {
@@ -156,11 +158,13 @@ void loop() {
     } else if (currentState == close_wait && light != 0) {
         currentState = open;
     } else if (currentState == close_wait && light == 0) {
+        Particle.publish("toggle_in", String(toggle_at-millis()) + "ms");
         if(millis() >= toggle_at) {
             closeDoor("");
         }
     }
 #endif
+
 #ifdef OPEN_DELAY
     if (currentState == closed && light != 0) {
         currentState = open_wait;
@@ -169,9 +173,12 @@ void loop() {
     } else if (currentState == open_wait && light == 0) {
         currentState = closed;
     } else if (currentState == open_wait && light != 0) {
+        Particle.publish("toggle_in", String(toggle_at-millis()) + "ms");
         if(millis() >= toggle_at) {
             openDoor("");
         }
     }
 #endif
+
+    delay(PUBLISH_DELAY);
 }
