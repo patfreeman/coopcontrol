@@ -7,4 +7,6 @@ DATA="access_token=${PARTICLE_ACCESS_TOKEN}"
 ret=`curl -s ${URL}${url}?${DATA} | jq '.result'`
 if [ "$ret" != "null" ]; then
 	printf "%.1f" $ret
+else
+	echo null
 fi

@@ -1,29 +1,64 @@
 rule "Coop Door Opened"
 when
-	Item Coop_Door_Switch received command ON
+        Item Coop_Door_Switch received command ON
 then
-	Coop_Door.sendCommand("OPEN")
+        Coop_Door.sendCommand("OPEN")
 end
 rule "Coop Door Closed"
 when
-	Item Coop_Door_Switch received command OFF
+        Item Coop_Door_Switch received command OFF
 then
-	Coop_Door.sendCommand("CLOSED")
+        Coop_Door.sendCommand("CLOSED")
 end
 
 rule "Coop Door Closed Remotely"
 when
-	Item Coop_Door_State changed from OPEN to CLOSED or
-	Item Coop_Door_State changed from CLOSE_WAIT to CLOSED
+        Item Coop_Door_State changed from OPEN to CLOSED or
+        Item Coop_Door_State changed from CLOSE_WAIT to CLOSED
 then
-	Coop_Door.sendCommand("CLOSED")
-	Coop_Door_Switch.postUpdate("OFF")
+        Coop_Door.sendCommand("CLOSED")
+        Coop_Door_Switch.postUpdate("OFF")
 end
 rule "Coop Door Opened Remotely"
 when
-	Item Coop_Door_State changed from CLOSED to OPEN or
-	Item Coop_Door_State changed from OPEN_WAIT to OPEN
+        Item Coop_Door_State changed from CLOSED to OPEN or
+        Item Coop_Door_State changed from OPEN_WAIT to OPEN
 then
-	Coop_Door.sendCommand("OPEN")
-	Coop_Door_Switch.postUpdate("ON")
+        Coop_Door.sendCommand("OPEN")
+        Coop_Door_Switch.postUpdate("ON")
+end
+
+rule "Chicken Coop Temperature Changed"
+when
+        Item Coop_Inside_Temp_String changed
+then
+        Coop_Inside_Temp.postUpdate(Double::parseDouble(Coop_Inside_Temp_String.state.toString))
+end
+
+rule "Chicken Run Temp Changed"
+when
+        Item Coop_Outside_Temp_String changed
+then
+        Coop_Outside_Temp.postUpdate(Double::parseDouble(Coop_Outside_Temp_String.state.toString))
+end
+
+rule "Chicken Coop Humidity Changed"
+when
+        Item Coop_Inside_Humidity_String changed
+then
+        Coop_Inside_Humidity.postUpdate(Double::parseDouble(Coop_Inside_Humidity_String.state.toString))
+end
+
+rule "Chicken Run Humidity Changed"
+when
+        Item Coop_Outside_Humidity_String changed
+then
+        Coop_Outside_Humidity.postUpdate(Double::parseDouble(Coop_Outside_Humidity_String.state.toString))
+end
+
+rule "Chicken Run Light Sensor Changed"
+when
+        Item Coop_Outside_Light_String changed
+then
+        Coop_Outside_Light.postUpdate(Double::parseDouble(Coop_Outside_Light_String.state.toString))
 end

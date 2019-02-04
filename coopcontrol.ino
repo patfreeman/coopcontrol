@@ -1,6 +1,4 @@
 #include "DHT.h"
-
-// This #include statement was automatically added by the Particle IDE.
 #include <RelayShield.h>
 
 // Make our own state enumerator
@@ -24,7 +22,7 @@ String DHTNAME_ONE = "inside";
 String DHTNAME_TWO = "outside";
 
 // Delay after light sensor before toggling door in milliseconds
-#define CLOSE_DELAY 1800000 // 30 minutes
+#define CLOSE_DELAY 300000 // 5 minutes, 1800000 // 30 minutes
 //#define OPEN_DELAY 5400000 // 90 minutes
 
 // Milliseconds of delay between relay controls
@@ -40,10 +38,10 @@ STARTUP(WiFi.selectAntenna(ANT_EXTERNAL)); // selects the u.FL antenna
 /********************************* </CONFIGS> *********************************/
 
 // Variables
-double one_temperature = 0;
-int one_humidity = 0;
-double two_temperature = 0;
-int two_humidity = 0;
+double one_temperature = -255;
+int one_humidity = -1;
+double two_temperature = -255;
+int two_humidity = -1;
 int light = 0;
 unsigned long toggle_at;
 
@@ -80,6 +78,13 @@ void setup() {
         currentState = close_wait;
         toggle_at = millis() + CLOSE_DELAY;
         Particle.publish("status", "close_wait");
+    }
+    // Set initial humidity
+    if (one_humidity > 100 || one_humidity < 0) {
+        one_humidity = dht_one.getHumidity();
+    }
+    if (two_humidity > 100 || two_humidity < 0) {
+        two_humidity = dht_two.getHumidity();
     }
     Particle.publish("setupComplete");
 }
@@ -123,7 +128,6 @@ int toggle(String args) {
 }
 
 int state(String args) {
-    Particle.publish("request", "state");
     Particle.publish("status", String(currentState));
     return(currentState);
 }
@@ -132,23 +136,35 @@ void loop() {
     // Light level measurement
     float light_measurement = analogRead(light_sensor_pin);
     light = (int)(light_measurement/4096*100);
+
     one_temperature = dht_one.getTempCelcius();
-    one_humidity = dht_one.getHumidity();
     two_temperature = dht_two.getTempCelcius();
-    two_humidity = dht_two.getHumidity();
+
+    // Error correct humidity and smooth graph
+    int tmp_humidity = 0;
+    tmp_humidity = dht_one.getHumidity();
+    if (abs(one_humidity - tmp_humidity) < 5) {
+        one_humidity = tmp_humidity;
+    }
+    tmp_humidity = dht_two.getHumidity();
+    if (abs(two_humidity - tmp_humidity) < 5) {
+        two_humidity = tmp_humidity;
+    }
 
     Spark.publish("light", String(light) + "%", PRIVATE);
+    delay(PUBLISH_DELAY/5);
     Spark.publish(String(DHTNAME_ONE) + " temperature", String(one_temperature)
         + " °C", PRIVATE);
+    delay(PUBLISH_DELAY/5);
     Spark.publish(String(DHTNAME_ONE) + " humidity", String(one_humidity)
         + "%", PRIVATE);
-
-    delay(PUBLISH_DELAY);
-
+    delay(PUBLISH_DELAY/5);
     Spark.publish(String(DHTNAME_TWO) + " temperature", String(two_temperature)
         + " °C", PRIVATE);
+    delay(PUBLISH_DELAY/5);
     Spark.publish(String(DHTNAME_TWO) + " humidity", String(two_humidity)
         + "%", PRIVATE);
+    delay(PUBLISH_DELAY/5);
 
 #ifdef CLOSE_DELAY
     if (currentState == open && light == 0) {
@@ -179,6 +195,4 @@ void loop() {
         }
     }
 #endif
-
-    delay(PUBLISH_DELAY);
 }
