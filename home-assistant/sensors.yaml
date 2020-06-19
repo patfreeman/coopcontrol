@@ -1,0 +1,18 @@
+- platform: command_line
+  name: Coop Door Status
+  command: '/config/scripts/coop_door.sh'
+- platform: command_line
+  name: Coop Inside Temperature
+  command: '/config/scripts/coop_temp.sh'
+- platform: command_line
+  name: Coop Inside Humidity
+  command: '/config/scripts/coop_humidity.sh'
+- platform: command_line
+  name: Chicken Run Temperature
+  command: '/config/scripts/coop_outside_temp.sh'
+- platform: command_line
+  name: Chicken Run Humidity
+  command: '/config/scripts/coop_outside_humidity.sh'
+- platform: command_line
+  name: Chicken Run Light Sensor
+  command: '/config/scripts/coop_outside_light.sh'

@@ -1,0 +1,6 @@
+- platform: command_line
+  switches:
+    coop_door:
+      friendly_name: Chicken Coop Door
+      command_on: '/config/scripts/coop_door.sh OPEN'
+      command_off: '/config/scripts/coop_door.sh CLOSED'

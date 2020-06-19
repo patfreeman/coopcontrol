@@ -7,6 +7,7 @@ Controls my chicken coop. Automated door through OpenHAB and the particle cloud.
 
 ### Prerequisites
 * RelayShield Particle Library - https://github.com/spark/relayshield
+* Home Assistant https://www.home-assistant.io/
 * OpenHAB2 - http://www.openhab.org/
 
 ### Hardware Setup
@@ -20,13 +21,8 @@ Controls my chicken coop. Automated door through OpenHAB and the particle cloud.
 3. Copy paste [coopcontrol.ino](coopcontrol.ino) into ID
 4. Add separate files with contents of [DHT.cpp](DHT.cpp) and [DHT.h](DHT.h)
 
+### Home Assistant Setup
+See [home-assistant](home-assistant)
+
 ### OpenHAB2 Setup
-1. Make sure the exec binding is enabled.
-2. Edit the files from the [openhab](openhab) subdirectory.
- * coop\_\*.sh need the appropriate PARTICLE\_ variables set
- * [coop.things](openhab/coop.things) needs the appriopriate location of the coop_door.sh script
-3. Add the files from the [openhab](openhab) subdirectory to the appropriate configuration directories.
- * coop\_\*.sh into your openhab conf/scripts directory
- * [coop.things](openhab/coop.things) into your openhab conf/things directory
- * [coop.items](openhab/coop.items) into your openhab conf/items directory
- * [coop.rules](openhab/coop.rules) into your openhab conf/rules directory
+See [openhab](openhab)
